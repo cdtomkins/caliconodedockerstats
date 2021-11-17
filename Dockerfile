@@ -5,4 +5,5 @@ COPY go.sum ./
 RUN go mod download
 COPY *.go ./
 RUN go build -o ./caliconodedockerstats
+EXPOSE 9088
 CMD [ "./caliconodedockerstats" ]
