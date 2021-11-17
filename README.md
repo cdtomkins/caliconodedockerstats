@@ -10,3 +10,4 @@ git pull && docker build -t caliconodedockerstats-`git log --pretty=format:'%h' 
 ```
 export CALICONODEDOCKERSTATS_ATTR_NAME="pull_count" && export CALICONODEDOCKERSTATS_TARGET_NAME="https://hub.docker.com/v2/repositories/calico/node/" && docker run --env-file ./env.list caliconodedockerstats-`git log --pretty=format:'%h' -n 1`
 ```
+Then, just get your docker container's IP and curl port 9088.
