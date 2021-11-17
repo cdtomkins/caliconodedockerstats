@@ -8,6 +8,5 @@ git pull && docker build -t caliconodedockerstats-`git log --pretty=format:'%h' 
 ```
 ## Testing Using A Local Kubeconfig:
 ```
-docker image ls
 export CALICONODEDOCKERSTATS_ATTR_NAME="pull_count" && export CALICONODEDOCKERSTATS_TARGET_NAME="https://hub.docker.com/v2/repositories/calico/node/" && docker run --env-file ./env.list caliconodedockerstats-`git log --pretty=format:'%h' -n 1`
 ```
