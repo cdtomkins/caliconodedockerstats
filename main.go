@@ -13,12 +13,12 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func getResultFromAPI(the_attr string, the_target string) {
+func getResultFromAPI(theAttr string, theTarget string) {
 	go func() {
 		// Forever...
 		for {
 			// Get the response from the API and log + exit on any error
-			resp, err := http.Get(the_target)
+			resp, err := http.Get(theTarget)
 			if err != nil {
 				log.Fatalln(err)
 			}
@@ -29,12 +29,15 @@ func getResultFromAPI(the_attr string, the_target string) {
 				log.Fatalln(err)
 			}
 
+			// Close the HTTP response
+			resp.Body.Close()
+
 			// If all okay so far, convert the body to a string and grab the attribute
-			string_body := string(body)
-			the_result := gjson.Get(string_body, the_attr)
+			stringBody := string(body)
+			the_result := gjson.Get(stringBody, theAttr)
 
 			// Update the Prometheus gauge with the float value of the attribute
-			calico_node_pull_count_gauge.Set(the_result.Float())
+			calicoNodePullCountGauge.Set(the_result.Float())
 
 			// Wait 5 minutes and do it all again
 			time.Sleep(3 * time.Minute)
@@ -43,7 +46,7 @@ func getResultFromAPI(the_attr string, the_target string) {
 }
 
 var (
-	calico_node_pull_count_gauge = promauto.NewGauge(prometheus.GaugeOpts{
+	calicoNodePullCountGauge = promauto.NewGauge(prometheus.GaugeOpts{
 		Name: "caliconodedockerstats_gauge",
 		Help: "calico-node's pull_count from Docker Hub",
 	})
@@ -51,11 +54,11 @@ var (
 
 func main() {
 	// Grab from the API target details from the env
-	env_attr := os.Getenv("CALICONODEDOCKERSTATS_ATTR_NAME")
-	env_target := os.Getenv("CALICONODEDOCKERSTATS_TARGET_NAME")
+	envAttr := os.Getenv("CALICONODEDOCKERSTATS_ATTR_NAME")
+	envTarget := os.Getenv("CALICONODEDOCKERSTATS_TARGET_NAME")
 
 	// Get the API result and update the Prometheus gauge with the value
-	getResultFromAPI(env_attr, env_target)
+	getResultFromAPI(envAttr, envTarget)
 
 	// Wait 10 seconds to make sure the attribute has updated before starting listener
 	time.Sleep(10 * time.Second)
