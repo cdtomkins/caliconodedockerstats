@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.16 AS /caliconodedockerstats-builder
+FROM golang:1.16 AS caliconodedockerstatsbuilder
 WORKDIR /caliconodedockerstats-builddir
 COPY go.mod ./
 COPY go.sum ./
@@ -9,6 +9,6 @@ RUN go build -o ./caliconodedockerstats
 
 FROM alpine:latest
 WORKDIR /caliconodedockerstats
-COPY --from=/caliconodedockerstats-builder //caliconodedockerstats-builddir/caliconodedockerstats ./
+COPY --from=caliconodedockerstatsbuilder /caliconodedockerstats-builddir/caliconodedockerstats ./
 EXPOSE 9088
 CMD [ "./caliconodedockerstats" ]
