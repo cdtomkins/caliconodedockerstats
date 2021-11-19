@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      k8s-app: caliconodedockerstats
+  template:
+    metadata:
+      labels:
+        k8s-app: caliconodedockerstats
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.imagename }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          env:
+          - name: CALICONODEDOCKERSTATS_ATTR_NAME
+            value: {{ .Values.CALICONODEDOCKERSTATS_ATTR_NAME }}
+          - name: CALICONODEDOCKERSTATS_TARGET_NAME
+            value: {{ .Values.CALICONODEDOCKERSTATS_TARGET_NAME }}
