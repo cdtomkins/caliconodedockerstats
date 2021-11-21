@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.16 AS caliconodedockerstatsbuilder
+FROM golang:1.17.3 AS caliconodedockerstatsbuilder
 WORKDIR /caliconodedockerstats-builddir
 COPY go.mod ./
 COPY go.sum ./
