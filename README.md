@@ -7,7 +7,15 @@ This documentation is a work-in-progress and should not yet be considered comple
 git pull && docker build -t caliconodedockerstats-`git log --pretty=format:'%h' -n 1` .
 ```
 ## Testing:
+Run it headless like this, grabbing the container ID:
 ```
-export CALICONODEDOCKERSTATS_ATTR_NAME="pull_count" && export CALICONODEDOCKERSTATS_TARGET_NAME="https://hub.docker.com/v2/repositories/calico/node/" && docker run --env-file ./env.list caliconodedockerstats-`git log --pretty=format:'%h' -n 1`
+export CALICONODEDOCKERSTATS_ATTR_NAME="pull_count" && export CALICONODEDOCKERSTATS_TARGET_NAME="https://hub.docker.com/v2/repositories/calico/node/" && export CID=$(docker run --detach --env-file ./env.list caliconodedockerstats-`git log --pretty=format:'%h' -n 1`)
 ```
-Then, just get your docker container's IP and curl port 9088.
+Then, just grab your docker container's IP from the container ID and curl port 9088, like this:
+```
+curl http://`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CID`:9088/metrics
+```
+Finally, you can stop it like this:
+```
+docker stop $CID
+```
